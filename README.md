@@ -3,4 +3,4 @@ Wiktionary Scraper is a basic scraper implementation to get word data from Wikti
 
 ## Installation
 You can install the Wiktionary Scraper from [PyPI](https://pypi.org/project/wkt_scraper/):
-    pip install realpython-reader
+    pip install wkt_scraper

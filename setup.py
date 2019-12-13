@@ -1,4 +1,3 @@
-import pathlib
 from setuptools import setup, find_packages
 
 
@@ -7,7 +6,6 @@ def readme():
         return f.read()
 
 
-# This call to setup() does all the work
 setup(
     name='wkt_scraper',
     version='1.0.0',
@@ -28,5 +26,5 @@ setup(
     ),
     include_package_data=True,
     url='https://github.com/fatih-akgul/wkt_scraper',
-    install_requires=['bs'],  # TODO: update requirements
+    install_requires=['bs4', 'requests', 'iso-639'],
 )
