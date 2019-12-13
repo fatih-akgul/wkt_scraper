@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 
 def readme():
@@ -21,9 +21,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.7',
     ],
-    packages=(
-        find_packages(exclude=('tests',)),
-    ),
+    packages=('scraper', ),
     include_package_data=True,
     url='https://github.com/fatih-akgul/wkt_scraper',
     install_requires=['bs4', 'requests', 'iso-639'],
