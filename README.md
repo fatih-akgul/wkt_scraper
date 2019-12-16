@@ -9,4 +9,4 @@ You can install the Wiktionary Scraper from [PyPI](https://pypi.org/project/wkt_
 In python code:
 
     from scraper import Scraper
-    response = Scraper('en', 'en').scrape('complicated')
+    response = Scraper('English', 'en').scrape('complicated')
