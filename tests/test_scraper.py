@@ -9,6 +9,7 @@ class ScraperTestCase(unittest.TestCase):
         super().__init__(*args, **kwargs)
         this_dir = os.path.dirname(os.path.abspath(__file__))
         self.data_dir = os.path.join(this_dir, 'data/wiktionary')
+        self.maxDiff = None
 
     def test_tr_en_gibi(self):
         expected_response = {
@@ -32,7 +33,7 @@ class ScraperTestCase(unittest.TestCase):
             'pronunciation': [
                 {
                     'type': 'IPA',
-                    'values': ['/ɡibi/']
+                    'values': [{'type': 'IPA', 'value': '/ɡibi/'}]
                 }
             ]
         }
@@ -76,7 +77,7 @@ class ScraperTestCase(unittest.TestCase):
             ],
             'pronunciation': [
                 {
-                    'type': 'IPA', 'values': ['/el/', '/əl/']
+                    'type': 'IPA', 'values': [{'type': 'IPA', 'value': '/el/'}, {'type': 'IPA', 'value': '/əl/'}]
                 }
             ]
         }
@@ -108,11 +109,11 @@ class ScraperTestCase(unittest.TestCase):
             'pronunciation': [
                 {
                     'type': 'IPA',
-                    'values': ['/aɾaˈba/']
+                    'values': [{'type': 'IPA', 'value': '/aɾaˈba/'}]
                 },
                 {
                     'type': 'Hyphenation',
-                    'values': ['a‧ra‧ba']
+                    'values': [{'type': 'Hyphenation', 'value': 'a‧ra‧ba'}]
                 }
             ]
         }
@@ -122,4 +123,76 @@ class ScraperTestCase(unittest.TestCase):
     def test_tr_en_foobar(self):
         expected_response = {'meanings': []}
         response = Scraper('tr', 'en').scrape('foobar')
+        self.assertDictEqual(response, expected_response)
+
+    def test_en_en_complicated(self):
+        expected_response = {
+            "meanings": [
+                {
+                    "etymology": None,
+                    "values": [
+                        {
+                            "text": "Difficult or convoluted.",
+                            "examples": []
+                        },
+                        {
+                            "text": "(biology) Folded longitudinally (as in the wings of certain insects).",
+                            "examples": []
+                        }
+                    ],
+                    "part_of_speech": "adjective",
+                    "antonyms": [
+                        "simple"
+                    ]
+                },
+                {
+                    "etymology": None,
+                    "values": [
+                        {
+                            "text": "simple past tense and past participle of complicate",
+                            "examples": []
+                        }
+                    ],
+                    "part_of_speech": "verb"
+                }
+            ],
+            "pronunciation": [
+                {
+                    "type": "IPA",
+                    "values": [
+                        {
+                            "type": "IPA",
+                            "value": "/\u02c8k\u0251mpl\u026ake\u026at\u026ad/"
+                        },
+                        {
+                            "type": "IPA",
+                            "value": "/\u02c8k\u0252mpl\u026ake\u026at\u026ad/"
+                        }
+                    ]
+                },
+                {
+                    "type": "Hyphenation",
+                    "values": [
+                        {
+                            "type": "Hyphenation",
+                            "value": "com\u2027pli\u2027cat\u2027ed"
+                        }
+                    ]
+                },
+                {
+                    "type": "Audio (US)",
+                    "values": [
+                        {
+                            "type": "audio/ogg; codecs=\"vorbis\"",
+                            "value": "//upload.wikimedia.org/wikipedia/commons/7/72/En-us-complicated.ogg"
+                        },
+                        {
+                            "type": "audio/mpeg",
+                            "value": "//upload.wikimedia.org/wikipedia/commons/transcoded/7/72/En-us-complicated.ogg/En-us-complicated.ogg.mp3"
+                        }
+                    ]
+                }
+            ]
+        }
+        response = Scraper('en', 'en').scrape('complicated')
         self.assertDictEqual(response, expected_response)

@@ -3,7 +3,6 @@ from typing import Dict, Any, List
 from iso639 import languages
 import requests
 from bs4 import BeautifulSoup
-import json
 
 
 def get_html(url: str) -> str:
@@ -48,7 +47,22 @@ def get_pronunciation(header: BeautifulSoup) -> List[Dict[str, Any]]:
         ul: BeautifulSoup = header.find_next_sibling()
         get_pronunciation_type(ul, results, 'IPA', 'IPA')
         get_pronunciation_type(ul, results, 'Hyphenation', 'Latn')
+        process_audio(ul, results)
     return results
+
+
+def process_audio(ul: BeautifulSoup, results: List[Dict[str, Any]]):
+    audio_table: BeautifulSoup = ul.find('table', class_='audiotable')
+    if audio_table:
+        trs: List[BeautifulSoup] = audio_table.find_all('tr')
+        for tr in trs:
+            td_type: BeautifulSoup = tr.find('td', class_='audiolink')
+            td_file: BeautifulSoup = tr.find('td', class_='audiofile')
+            if td_type and td_file:
+                results.append({
+                    'type': td_type.text,
+                    'values': [{'type': src['type'], 'value': src['src']} for src in td_file.find_all('source')]
+                })
 
 
 def get_pronunciation_type(ul: BeautifulSoup,
@@ -59,7 +73,7 @@ def get_pronunciation_type(ul: BeautifulSoup,
     if values:
         results.append({
             'type': pronunciation_type,
-            'values': [span.text for span in values]
+            'values': [{'type': pronunciation_type, 'value': span.text} for span in values]
         })
 
 
@@ -99,30 +113,50 @@ def process_meaning_values(word_p: BeautifulSoup, meaning: Dict[str, Any]):
     while next_sibling.name == 'p':
         next_sibling = next_sibling.find_next_sibling()
     if next_sibling.name == 'ol':
-        lis = next_sibling.find_all('li')
+        lis: List[BeautifulSoup] = next_sibling.find_all('li', recursive=False)
         for li in lis:
-            dl: BeautifulSoup = li.find('dl')
-            examples = []
-            if dl:
-                dl.extract()
-                example_divs = dl.find_all(class_='h-usage-example')
-                for example_div in example_divs:
-                    example_span: BeautifulSoup = example_div.find(class_='e-example')
-                    if example_span:
-                        example = {
-                            'example': example_span.get_text(),
-                            'translation': None,
-                        }
-                        translation: BeautifulSoup = example_div.find(class_='e-translation')
-                        if translation:
-                            example['translation'] = translation.get_text()
-                        examples.append(example)
+            remove_descendants_with_class(li, 'HQToggle')
+            remove_parent_of_descendant_with_class(li, 'citation-whole')
+            examples = find_usage_examples(li)
+
             value = {
                 'text': li.get_text().strip(),
                 'examples': examples
             }
             meaning['values'].append(value)
         process_additional_data(next_sibling, meaning)
+
+
+def remove_descendants_with_class(parent: BeautifulSoup, class_to_remove: str):
+    hq_toggles: List[BeautifulSoup] = parent.find_all(class_=class_to_remove)
+    for hq_toggle in hq_toggles:
+        hq_toggle.extract()
+
+
+def remove_parent_of_descendant_with_class(parent: BeautifulSoup, class_to_remove: str):
+    hq_toggle: BeautifulSoup = parent.find(class_=class_to_remove)
+    if hq_toggle and hq_toggle.parent:
+        hq_toggle.parent.extract()
+
+
+def find_usage_examples(parent: BeautifulSoup):
+    dl: BeautifulSoup = parent.find('dl')
+    examples = []
+    if dl:
+        dl.extract()
+        example_divs = dl.find_all(class_='h-usage-example')
+        for example_div in example_divs:
+            example_span: BeautifulSoup = example_div.find(class_='e-example')
+            if example_span:
+                example = {
+                    'example': example_span.get_text(),
+                    'translation': None,
+                }
+                translation: BeautifulSoup = example_div.find(class_='e-translation')
+                if translation:
+                    example['translation'] = translation.get_text()
+                examples.append(example)
+    return examples
 
 
 def is_part_of_speech_header(header: BeautifulSoup) -> bool:
