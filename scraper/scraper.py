@@ -112,8 +112,9 @@ def process_meaning_values(word_p: BeautifulSoup, meaning: Dict[str, Any]):
     next_sibling: BeautifulSoup = word_p
     while next_sibling.name == 'p':
         next_sibling = next_sibling.find_next_sibling()
-    if next_sibling.name == 'ol':
-        lis: List[BeautifulSoup] = next_sibling.find_all('li', recursive=False)
+    if next_sibling.name in ['ol', 'dl']:
+        element_tag = 'dd' if next_sibling.name == 'dl' else 'li'
+        lis: List[BeautifulSoup] = next_sibling.find_all(element_tag, recursive=False)
         for li in lis:
             remove_descendants_with_class(li, 'HQToggle')
             remove_parent_of_descendant_with_class(li, 'citation-whole')
@@ -165,7 +166,7 @@ def is_part_of_speech_header(header: BeautifulSoup) -> bool:
         next_sibling = next_sibling.find_next_sibling()
     if next_sibling and next_sibling.name == 'p':
         next_sibling = next_sibling.find_next_sibling()
-        if next_sibling.name == 'ol':
+        if next_sibling.name in ['ol', 'dl']:
             return True
     return False
 
@@ -231,8 +232,15 @@ def process_by_id(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any], 
 
 class Scraper:
 
-    def __init__(self, from_language: str = 'en', to_language: str = 'en'):
-        self._from_language = languages.get(alpha2=from_language)
+    def __init__(self, from_language_name: str = 'English', to_language: str = 'en'):
+        """
+        :param to_language: The 2-character representation of the language we are translating to. For example en, es
+
+        :param from_language_name: Full name of the source language in to_language.
+        If we are looking up en to en, this will be "English".
+        If we are looking up en to es, this will be "Inglés".
+        """
+        self._from_language_name = from_language_name
         self._to_language = languages.get(alpha2=to_language)
 
     def _get_url(self, word: str) -> str:
@@ -240,13 +248,13 @@ class Scraper:
 
     def scrape(self, word: str) -> Dict[str, Any]:
         root = get_root_element(self._get_url(word))
-        label = root.find(id=self._from_language.name)
+        label = root.find(id=self._from_language_name)
         response = {'meanings': []}
         if label is not None:
-            siblings: List[BeautifulSoup] = label.parent.find_next_siblings(['h3', 'hr'])
+            siblings: List[BeautifulSoup] = label.parent.find_next_siblings(['h2', 'h3', 'hr'])
             processed_headers = []
             for sibling in siblings:
-                if sibling.name == 'hr':
+                if sibling.name in ['hr', 'h2']:
                     break
                 else:
                     sibling_text = str(sibling)

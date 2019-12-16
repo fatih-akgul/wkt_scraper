@@ -11,6 +11,11 @@ class ScraperTestCase(unittest.TestCase):
         self.data_dir = os.path.join(this_dir, 'data/wiktionary')
         self.maxDiff = None
 
+    def test_tr_en_foobar(self):
+        expected_response = {'meanings': []}
+        response = Scraper('Turkish', 'en').scrape('foobar')
+        self.assertDictEqual(response, expected_response)
+
     def test_tr_en_gibi(self):
         expected_response = {
             'meanings': [
@@ -37,7 +42,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('tr', 'en').scrape('gibi')
+        response = Scraper('Turkish', 'en').scrape('gibi')
         self.assertDictEqual(response, expected_response)
 
     def test_tr_en_el(self):
@@ -81,7 +86,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('tr', 'en').scrape('el')
+        response = Scraper('Turkish', 'en').scrape('el')
         self.assertDictEqual(response, expected_response)
 
     def test_tr_en_araba(self):
@@ -117,12 +122,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('tr', 'en').scrape('araba')
-        self.assertDictEqual(response, expected_response)
-
-    def test_tr_en_foobar(self):
-        expected_response = {'meanings': []}
-        response = Scraper('tr', 'en').scrape('foobar')
+        response = Scraper('Turkish', 'en').scrape('araba')
         self.assertDictEqual(response, expected_response)
 
     def test_en_en_complicated(self):
@@ -194,5 +194,24 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('en', 'en').scrape('complicated')
+        response = Scraper('English', 'en').scrape('complicated')
+        self.assertDictEqual(response, expected_response)
+
+    def test_en_tr_street(self):
+        expected_response = {
+            "meanings": [
+                {
+                    "etymology": None,
+                    "values": [
+                        {
+                            "text": "[1] (ula\u015f\u0131m) cadde",
+                            "examples": []
+                        }
+                    ],
+                    "part_of_speech": "ad"
+                }
+            ]
+        }
+        response = Scraper('İngilizce', 'tr').scrape('street')
+
         self.assertDictEqual(response, expected_response)
