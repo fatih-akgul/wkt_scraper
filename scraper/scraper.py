@@ -121,27 +121,10 @@ def is_part_of_speech_header(header: BeautifulSoup) -> bool:
     return False
 
 
-def process_see_also(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any]) -> None:
-    process_by_id(after_meaning_values, meaning, 'See_also')
-
-
-def process_derived_terms(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any]) -> None:
-    process_by_id(after_meaning_values, meaning, 'Derived_terms')
-
-
-def process_related_terms(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any]) -> None:
-    process_by_id(after_meaning_values, meaning, 'Related_terms')
-
-
-def process_synonyms(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any]) -> None:
-    process_by_id(after_meaning_values, meaning, 'Synonyms')
-
-
-def process_antonyms(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any]) -> None:
-    process_by_id(after_meaning_values, meaning, 'Antonyms')
-
-
-def process_by_id(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any], tag_id: str):
+def process_by_id(after_meaning_values: BeautifulSoup,
+                  meaning: Dict[str, Any],
+                  response_field: str,
+                  tag_id: str):
     result = []
     if after_meaning_values.name in ['h3', 'h4', 'h5']:
         h4: BeautifulSoup = after_meaning_values
@@ -153,7 +136,7 @@ def process_by_id(after_meaning_values: BeautifulSoup, meaning: Dict[str, Any], 
                 for li in lis:
                     result.append(li.get_text())
     if result:
-        meaning[tag_id.lower()] = result
+        meaning[response_field] = result
 
 
 class Scraper:
@@ -168,6 +151,16 @@ class Scraper:
         """
         self._from_language_name = from_language_name
         self._to_language = get_language(alpha2=to_language)
+
+        # Key is the name of field in response. Value is the HTML element ID on the Wiktionary page
+        self._additional_data = {
+            'see_also': 'See_also',
+            'related_terms': 'Related_terms',
+            'synonyms': 'Synonyms',
+            'antonyms': 'Antonyms',
+            'proverbs': self._to_language.proverbs,
+            'derived_terms': self._to_language.derived_terms,
+        }
 
     def _get_url(self, word: str) -> str:
         return f'https://{self._to_language.alpha2}.wiktionary.org/wiki/{word}'
@@ -264,11 +257,9 @@ class Scraper:
         if after_meaning_values is not None and meaning['definitions']:
             next_sibling = after_meaning_values
             while next_sibling is not None and not self._is_meaning_switcher(next_sibling):
-                process_see_also(next_sibling, meaning)
-                process_derived_terms(next_sibling, meaning)
-                process_related_terms(next_sibling, meaning)
-                process_synonyms(next_sibling, meaning)
-                process_antonyms(next_sibling, meaning)
+                for response_field, html_id in self._additional_data.items():
+                    process_by_id(after_meaning_values, meaning, response_field, html_id)
+
                 next_sibling = next_sibling.find_next_sibling()
 
     def _is_meaning_switcher(self, header: BeautifulSoup):

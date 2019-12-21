@@ -41,7 +41,10 @@ class ScraperTestCase(unittest.TestCase):
                             "examples": []
                         }
                     ],
-                    "part_of_speech": "ad"
+                    "part_of_speech": "ad",
+                    "derived_terms": [
+                        "arabaca, arabac\u0131, arabac\u0131k, arabal\u0131, arabas\u0131z, arabayken, arabayla, arabaysa"
+                    ]
                 },
                 {
                     "etymology": None,
