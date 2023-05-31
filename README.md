@@ -6,7 +6,10 @@ You can install the Wiktionary Scraper from [PyPI](https://pypi.org/project/wkt_
     
     pip install wkt_scraper
 
-In python code:
+In python code, to look up the word "complicated" from English to English:
 
     from scraper import Scraper
-    response = Scraper('English', 'en').scrape('complicated')
+    response = Scraper('en', 'en').scrape('complicated')
+
+Currently only English and Turkish are supported. 
+Supporting more languages will require additional work and testing. 

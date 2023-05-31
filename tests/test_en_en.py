@@ -10,6 +10,9 @@ class ScraperTestCase(unittest.TestCase):
 
     def test_en_en_complicated(self):
         expected_response = {
+            "word": "complicated",
+            "from_language": "en",
+            "to_language": "en",
             "meanings": [
                 {
                     "etymology": None,
@@ -29,8 +32,12 @@ class ScraperTestCase(unittest.TestCase):
                         }
                     ],
                     "part_of_speech": "adjective",
+                    "metadata": "complicated (comparative more complicated, superlative most complicated)",
                     "antonyms": [
                         "simple"
+                    ],
+                    "derived_terms": [
+                        "complicated fracture"
                     ]
                 },
                 {
@@ -47,7 +54,8 @@ class ScraperTestCase(unittest.TestCase):
                             ]
                         }
                     ],
-                    "part_of_speech": "verb"
+                    "part_of_speech": "verb",
+                    "metadata": "complicated",
                 }
             ],
             "pronunciation": [
@@ -55,11 +63,11 @@ class ScraperTestCase(unittest.TestCase):
                     "type": "IPA",
                     "values": [
                         {
-                            "type": "IPA",
+                            "type": "General American",
                             "value": "/\u02c8k\u0251mpl\u026ake\u026at\u026ad/"
                         },
                         {
-                            "type": "IPA",
+                            "type": "Received Pronunciation",
                             "value": "/\u02c8k\u0252mpl\u026ake\u026at\u026ad/"
                         }
                     ]
@@ -88,7 +96,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('English', 'en').scrape('complicated')
+        response = Scraper('en', 'en').scrape('complicated')
 
         import json
         print(json.dumps(response, indent=4))

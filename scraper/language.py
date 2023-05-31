@@ -12,14 +12,33 @@ class Language:
 
 
 languages: Dict[str, Language] = {
-    'en': Language('en', 'English', 'Etymology', 'Pronunciation',
-                   derived_terms='Derived_terms',
-                   proverbs='Proverbs',
-                   ),
-    'tr': Language('tr', 'Turkish', 'Köken', 'Söyleniş',
-                   derived_terms='Türetilmiş_kavramlar',
-                   proverbs='Atasözleri',
-                   ),
+    'en': Language(
+        alpha2='en',
+        name='English',
+        etymology='Etymology',
+        pronunciation='Pronunciation',
+        derived_terms='Derived_terms',
+        proverbs='Proverbs',
+    ),
+    'tr': Language(
+        alpha2='tr',
+        name='Turkish',
+        etymology='Köken',
+        pronunciation='Söyleniş',
+        derived_terms='Türetilmiş_kavramlar',
+        proverbs='Atasözleri',
+    ),
+}
+
+language_names = {
+    'tr': {
+        'tr': 'Türkçe',
+        'en': 'İngilizce',
+    },
+    'en': {
+        'tr': 'Turkish',
+        'en': 'English',
+    },
 }
 
 
