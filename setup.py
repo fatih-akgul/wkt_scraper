@@ -8,8 +8,8 @@ def readme():
 
 setup(
     name='wkt_scraper',
-    version='1.0.0',
-    description='Parse word information from Wiktionary',
+    version='1.0.1',
+    description='Parse word information from Wiktionary. Currently only English and Turkish are supported.',
     long_description=readme(),
     long_description_content_type='text/markdown',
     keywords='wiktionary scraper parser',
@@ -19,10 +19,10 @@ setup(
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.11',
     ],
-    packages=('scraper', ),
+    packages=['scraper', ],
     include_package_data=True,
     url='https://github.com/fatih-akgul/wkt_scraper',
-    install_requires=['bs4', 'requests', 'iso-639'],
+    install_requires=['beautifulsoup4', 'requests'],
 )
