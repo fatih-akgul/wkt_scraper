@@ -1,6 +1,10 @@
 import unittest
+from unittest.mock import patch
+
 from scraper import Scraper
 import json
+
+from tests.mock import mock_get_html
 
 
 class ScraperTestCase(unittest.TestCase):
@@ -9,7 +13,8 @@ class ScraperTestCase(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.maxDiff = None
 
-    def test_en_tr_street(self):
+    @patch('scraper.scraper.get_html', side_effect=mock_get_html)
+    def test_en_tr_street(self, _):
         expected_response = {
             "word": "street",
             "from_language": "en",
@@ -33,7 +38,8 @@ class ScraperTestCase(unittest.TestCase):
 
         self.assertDictEqual(response, expected_response)
 
-    def test_en_tr_car(self):
+    @patch('scraper.scraper.get_html', side_effect=mock_get_html)
+    def test_en_tr_car(self, _):
         expected_response = {
             "word": "car",
             "from_language": "en",

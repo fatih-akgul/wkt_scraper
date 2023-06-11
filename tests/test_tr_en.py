@@ -1,6 +1,10 @@
 import unittest
+from unittest.mock import patch
+
 from scraper import Scraper
 import json
+
+from tests.mock import mock_get_html
 
 
 class ScraperTestCase(unittest.TestCase):
@@ -9,7 +13,8 @@ class ScraperTestCase(unittest.TestCase):
         super().__init__(*args, **kwargs)
         self.maxDiff = None
 
-    def test_tr_en_foobar(self):
+    @patch('scraper.scraper.get_html', side_effect=mock_get_html)
+    def test_tr_en_foobar(self, _):
         expected_response = {
             "word": "foobar",
             "from_language": "tr",
@@ -19,7 +24,8 @@ class ScraperTestCase(unittest.TestCase):
         response = Scraper('tr', 'en').scrape('foobar')
         self.assertDictEqual(response, expected_response)
 
-    def test_tr_en_gibi(self):
+    @patch('scraper.scraper.get_html', side_effect=mock_get_html)
+    def test_tr_en_gibi(self, _):
         expected_response = {
             "word": "gibi",
             "from_language": "tr",
@@ -64,7 +70,8 @@ class ScraperTestCase(unittest.TestCase):
 
         self.assertDictEqual(response, expected_response)
 
-    def test_tr_en_el(self):
+    @patch('scraper.scraper.get_html', side_effect=mock_get_html)
+    def test_tr_en_el(self, _):
         expected_meanings = {
             "word": "el",
             "from_language": "tr",
@@ -131,7 +138,8 @@ class ScraperTestCase(unittest.TestCase):
         del meanings['meanings'][0]['etymology']  # etymology is not stable
         self.assertDictEqual(meanings, expected_meanings)
 
-    def test_tr_en_araba(self):
+    @patch('scraper.scraper.get_html', side_effect=mock_get_html)
+    def test_tr_en_araba(self, _):
         expected_response = {
             "word": "araba",
             "from_language": "tr",
