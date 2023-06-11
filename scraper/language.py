@@ -20,6 +20,14 @@ languages: Dict[str, Language] = {
         derived_terms='Derived_terms',
         proverbs='Proverbs',
     ),
+    'es': Language(
+        alpha2='es',
+        name='Spanish',
+        etymology='Etimología',
+        pronunciation='Pronunciación',
+        derived_terms='Términos_derivados',
+        proverbs='Proverbios',
+    ),
     'tr': Language(
         alpha2='tr',
         name='Turkish',
@@ -32,13 +40,20 @@ languages: Dict[str, Language] = {
 
 language_names = {
     'tr': {
-        'tr': 'Türkçe',
         'en': 'İngilizce',
+        'es': 'İspanyolca',
+        'tr': 'Türkçe',
     },
     'en': {
-        'tr': 'Turkish',
         'en': 'English',
+        'es': 'Spanish',
+        'tr': 'Turkish',
     },
+    'es': {
+        'en': 'Inglés',
+        'es': 'Español',
+        'tr': 'Turco',
+    }
 }
 
 

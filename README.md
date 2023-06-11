@@ -6,10 +6,10 @@ You can install the Wiktionary Scraper from [PyPI](https://pypi.org/project/wkt_
     
     pip install wkt_scraper
 
-In python code, to look up the word "complicated" from English to English:
+In python code, to look up the word "street" from English to Spanish:
 
     from scraper import Scraper
-    response = Scraper('en', 'en').scrape('complicated')
+    response = Scraper('en', 'es').scrape('street')
 
-Currently only English and Turkish are supported. 
+Currently only English, Spanish and Turkish are supported. 
 Supporting more languages will require additional work and testing. 
