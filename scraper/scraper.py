@@ -309,11 +309,12 @@ class Scraper:
         next_sibling: PageElement = word_p
         if next_sibling.name == 'p':
             meaning['metadata'] = next_sibling.get_text().strip()
-        if next_sibling.name in ['p', 'div', 'pre', 'figure']:
+        if next_sibling.name in ['p', 'div', 'pre', 'figure', 'table']:
             next_sibling = next_sibling.find_next_sibling(name=['ol', 'dl'])
-        if next_sibling.name in ['ol', 'dl']:
+        meaning_sibling = next_sibling
+        while meaning_sibling and meaning_sibling.name in ['ol', 'dl']:
             # element_tag = 'dd' if next_sibling.name == 'dl' else 'li'
-            lis: ResultSet[PageElement] = next_sibling.find_all(name=['dd', 'li'], recursive=False)
+            lis: ResultSet[PageElement] = meaning_sibling.find_all(name=['dd', 'li'], recursive=False)
             for li in lis:
                 remove_descendants_with_class(li, 'HQToggle')
                 remove_parent_of_descendant_with_class(li, 'citation-whole')
@@ -324,6 +325,7 @@ class Scraper:
                     'examples': examples
                 }
                 meaning['definitions'].append(value)
+            meaning_sibling = meaning_sibling.find_next_sibling()
             self._process_additional_data(next_sibling, meaning)
 
     def _process_additional_data(self, after_meaning_values: PageElement, meaning: Dict[str, Any]) -> None:

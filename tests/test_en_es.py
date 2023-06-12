@@ -22,7 +22,20 @@ class ScraperTestCase(unittest.TestCase):
             "meanings": [
                 {
                     "etymology": "Del ingl\u00e9s antiguo str\u00e6t.",
-                    "definitions": [],
+                    "definitions": [
+                        {
+                            "text": "Calle (v\u00eda).",
+                            "examples": []
+                        },
+                        {
+                            "text": "Calle (v\u00eda y alrededores).",
+                            "examples": []
+                        },
+                        {
+                            "text": "Calle (grupo de personas que estan en la v\u00eda o que viven en la misma v\u00eda).",
+                            "examples": []
+                        }
+                    ],
                     "part_of_speech": "sustantivo"
                 },
                 {
