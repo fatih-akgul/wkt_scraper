@@ -47,6 +47,22 @@ class ScraperTestCase(unittest.TestCase):
                     ],
                     "part_of_speech": "adjetivo"
                 }
+            ],
+            "pronunciation": [
+                {
+                    "type": "Audio",
+                    "values": [
+                        {
+                            "type": "audio/ogg; codecs=\"vorbis\"",
+                            "value": "//upload.wikimedia.org/wikipedia/commons/6/6e/En-us-street.ogg"
+                        },
+                        {
+                            "type": "audio/mpeg",
+                            "value": "//upload.wikimedia.org/wikipedia/commons/transcoded/6/6e/En-us-street."
+                                     "ogg/En-us-street.ogg.mp3"
+                        }
+                    ]
+                }
             ]
         }
         response = Scraper('en', 'es').scrape('street')

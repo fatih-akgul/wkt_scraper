@@ -19,7 +19,8 @@ class ScraperTestCase(unittest.TestCase):
             "word": "foobar",
             "from_language": "tr",
             "to_language": "en",
-            'meanings': []
+            'meanings': [],
+            'pronunciation': [],
         }
         response = Scraper('tr', 'en').scrape('foobar')
         self.assertDictEqual(response, expected_response)

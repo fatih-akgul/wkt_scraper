@@ -31,7 +31,8 @@ class ScraperTestCase(unittest.TestCase):
                     "part_of_speech": "ad",
                     "metadata": "street (\u00e7o\u011fulu streets)",
                 }
-            ]
+            ],
+            "pronunciation": [],
         }
         response = Scraper('en', 'tr').scrape('street')
         print(json.dumps(response, indent=4))
@@ -64,7 +65,8 @@ class ScraperTestCase(unittest.TestCase):
                     "part_of_speech": "ad",
                     "metadata": "car (\u00e7o\u011fulu cars)",
                 }
-            ]
+            ],
+            "pronunciation": [],
         }
         response = Scraper('en', 'tr').scrape('car')
         print(json.dumps(response, indent=4))

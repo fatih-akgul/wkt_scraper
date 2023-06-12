@@ -201,16 +201,18 @@ class Scraper:
             'derived_terms': self._to_language.derived_terms,
         }
 
+        self.response = {
+            'word': '',
+            'from_language': from_language,
+            'to_language': to_language,
+            'meanings': []
+        }
+
     def scrape(self, word: str) -> Dict[str, Any]:
         root = get_root_element(self._get_url(word))
         self._remove_other_languages(root)
         label = root.find(id=self._from_language_name)
-        response = {
-            'word': word,
-            'from_language': self._from_language.alpha2,
-            'to_language': self._to_language.alpha2,
-            'meanings': []
-        }
+        self.response['word'] = word
         if label is not None:
             siblings: ResultSet[PageElement] = label.parent.find_next_siblings(['h2', 'h3', 'hr'])
             processed_headers = []
@@ -220,9 +222,22 @@ class Scraper:
                 else:
                     sibling_text = str(sibling)
                     if sibling_text not in processed_headers:
-                        response = self._process_header(sibling, response, processed_headers)
+                        self._process_header(sibling, processed_headers)
                     processed_headers.append(sibling_text)
-        return response
+        if not self._response_has_audio():
+            self._process_pronunciation(root)
+        return self.response
+
+    def _response_has_audio(self) -> bool:
+        if 'pronunciation' not in self.response:
+            return False
+        for pronunciation in self.response['pronunciation']:
+            for pronunciation_value in pronunciation['values']:
+                if 'value' in pronunciation_value and (
+                        '.mp3' in pronunciation_value['value']
+                        or '.ogg' in pronunciation_value['value']):
+                    return True
+        return False
 
     def _remove_other_languages(self, root: PageElement):
         languages: ResultSet[Tag] = root.find_all(name='h2')
@@ -240,15 +255,13 @@ class Scraper:
     def _get_url(self, word: str) -> str:
         return f'https://{self._to_language.alpha2}.wiktionary.org/wiki/{word}'
 
-    def _process_header(self, header: PageElement, response: Dict[str, Any], processed_headers) -> Dict[str, Any]:
+    def _process_header(self, header: PageElement, processed_headers):
         if self._is_pronunciation_header(header):
-            response['pronunciation'] = get_pronunciation(header)
+            self.response['pronunciation'] = get_pronunciation(header)
         elif self._is_etymology_header(header):
-            response['meanings'].append(self._get_meaning_with_etymology(header, processed_headers))
+            self.response['meanings'].append(self._get_meaning_with_etymology(header, processed_headers))
         elif is_part_of_speech_header(header):
-            response['meanings'].append(self._get_meaning_without_etymology(header))
-
-        return response
+            self.response['meanings'].append(self._get_meaning_without_etymology(header))
 
     def _is_pronunciation_header(self, header: PageElement) -> bool:
         if header.find_all('span', string=self._to_language.pronunciation):
@@ -331,3 +344,23 @@ class Scraper:
         if header.find_all('span', string=re.compile(self._to_language.etymology + '.*')):
             return True
         return False
+
+    def _process_pronunciation(self, root: BeautifulSoup) -> None:
+        audio_entries = root.find_all('audio')
+        pronunciations = []
+        if 'pronunciation' in self.response:
+            pronunciations = self.response['pronunciation']
+        for audio_entry in audio_entries:
+            sources = audio_entry.find_all('source')
+            if not sources:
+                continue
+            pronunciation_values = []
+            pronunciation = {'type': 'Audio', 'values': pronunciation_values}
+            for source in sources:
+                pronunciation_values.append({
+                    'type': source.attrs['type'],
+                    'value': source.attrs['src'],
+                })
+            pronunciations.append(pronunciation)
+
+        self.response['pronunciation'] = pronunciations
