@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from scraper import Scraper
+from scraper import scrape
 from tests.mock import mock_get_html
 
 
@@ -100,7 +100,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('en', 'en').scrape('complicated')
+        response = scrape('en', 'en', 'complicated')
 
         import json
         print(json.dumps(response, indent=4))
@@ -163,7 +163,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('en', 'en').scrape('foobar')
+        response = scrape('en', 'en', 'foobar')
 
         import json
         print(json.dumps(response, indent=4))

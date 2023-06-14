@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from scraper import Scraper
+from scraper import scrape
 import json
 
 from tests.mock import mock_get_html
@@ -34,7 +34,7 @@ class ScraperTestCase(unittest.TestCase):
             ],
             "pronunciation": [],
         }
-        response = Scraper('en', 'tr').scrape('street')
+        response = scrape('en', 'tr', 'street')
         print(json.dumps(response, indent=4))
 
         self.assertDictEqual(response, expected_response)
@@ -68,7 +68,7 @@ class ScraperTestCase(unittest.TestCase):
             ],
             "pronunciation": [],
         }
-        response = Scraper('en', 'tr').scrape('car')
+        response = scrape('en', 'tr', 'car')
         print(json.dumps(response, indent=4))
 
         self.assertDictEqual(response, expected_response)

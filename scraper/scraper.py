@@ -5,6 +5,10 @@ from bs4 import BeautifulSoup, PageElement, ResultSet, Tag, NavigableString
 from scraper.language import get_language, language_names
 
 
+def scrape(from_language: str, to_language: str, word: str) -> Dict[str, Any]:
+    return Scraper(from_language, to_language).scrape(word)
+
+
 def get_html(url: str) -> str:
     response = requests.get(url)
     code = response.status_code

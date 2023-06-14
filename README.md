@@ -8,8 +8,8 @@ You can install the Wiktionary Scraper from [PyPI](https://pypi.org/project/wkt_
 
 In python code, to look up the word "street" from English to Spanish:
 
-    from scraper import Scraper
-    response = Scraper('en', 'es').scrape('street')
+    from scraper import scrape
+    response = scrape('en', 'es', 'street')
 
 Currently only English, Spanish and Turkish are supported. 
 Supporting more languages will require additional work and testing. 

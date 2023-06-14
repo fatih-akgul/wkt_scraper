@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from scraper import Scraper
+from scraper import scrape
 import json
 
 from tests.mock import mock_get_html
@@ -22,7 +22,7 @@ class ScraperTestCase(unittest.TestCase):
             'meanings': [],
             'pronunciation': [],
         }
-        response = Scraper('tr', 'en').scrape('foobar')
+        response = scrape('tr', 'en', 'foobar')
         self.assertDictEqual(response, expected_response)
 
     @patch('scraper.scraper.get_html', side_effect=mock_get_html)
@@ -66,7 +66,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('tr', 'en').scrape('gibi')
+        response = scrape('tr', 'en', 'gibi')
         print(json.dumps(response, indent=4))
 
         self.assertDictEqual(response, expected_response)
@@ -133,7 +133,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        meanings = Scraper('tr', 'en').scrape('el')
+        meanings = scrape('tr', 'en', 'el')
         print(json.dumps(meanings, indent=4))
 
         del meanings['meanings'][0]['etymology']  # etymology is not stable
@@ -193,7 +193,7 @@ class ScraperTestCase(unittest.TestCase):
                 }
             ]
         }
-        response = Scraper('tr', 'en').scrape('araba')
+        response = scrape('tr', 'en', 'araba')
         print(json.dumps(response, indent=4))
 
         self.assertDictEqual(response, expected_response)

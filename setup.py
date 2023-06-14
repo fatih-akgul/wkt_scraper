@@ -8,8 +8,8 @@ def readme():
 
 setup(
     name='wkt_scraper',
-    version='1.0.1',
-    description='Parse word information from Wiktionary. Currently only English and Turkish are supported.',
+    version='1.0.3',
+    description='Parse word information from Wiktionary. Currently only English, Spanish and Turkish are supported.',
     long_description=readme(),
     long_description_content_type='text/markdown',
     keywords='wiktionary scraper parser',

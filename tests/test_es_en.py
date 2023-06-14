@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 
-from scraper import Scraper
+from scraper import scrape
 from tests.mock import mock_get_html
 
 
@@ -88,7 +88,7 @@ class ScraperTestCase(unittest.TestCase):
             ]
         }
 
-        response = Scraper('es', 'en').scrape('aprender')
+        response = scrape('es', 'en', 'aprender')
 
         import json
         print(json.dumps(response, indent=4))
